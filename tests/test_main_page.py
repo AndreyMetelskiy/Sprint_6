@@ -5,11 +5,10 @@ from pages.main_page import MainPage
 @allure.feature("Главная страница")
 @allure.story("Раздел 'Вопросы о важном'")
 class TestMainPage:
-
+    
     @allure.title("Проверка текста ответов в выпадающем списке")
-    @allure.description("Проверяем, что при нажатии на стрелочку открывается соответствующий текст для каждого из 8 вопросов")
     @pytest.mark.parametrize(
-        "button, text, expected_text",
+        "question_locator, answer_locator, expected_text",
         [
             (MainPage.DROPDOWN_LIST_ELEMENT_BUTTON_0, MainPage.DROPDOWN_BUTTON_0_TEXT, "Сутки — 400 рублей. Оплата курьеру — наличными или картой."),
             (MainPage.DROPDOWN_LIST_ELEMENT_BUTTON_1, MainPage.DROPDOWN_BUTTON_1_TEXT, "Пока что у нас так: один заказ — один самокат. Если хотите покататься с друзьями, можете просто сделать несколько заказов — один за другим."),
@@ -21,10 +20,7 @@ class TestMainPage:
             (MainPage.DROPDOWN_LIST_ELEMENT_BUTTON_7, MainPage.DROPDOWN_BUTTON_7_TEXT, "Да, обязательно. Всем самокатов! И Москве, и Московской области."),
         ]
     )
-    def test_check_text_button(self, driver, scroll_to, button, text, expected_text):
+    def test_check_faq_answers(self, driver, question_locator, answer_locator, expected_text):
         main_page = MainPage(driver)
-        # Вызов метода через экземпляр страницы
-        result_text = main_page.check_text_button(scroll_to, button, text)
-        # Проверка результата 
-        with allure.step(f"Проверка соответствия текста для кнопки {button}"):
-            assert result_text.strip() == expected_text.strip()
+        result_text = main_page.get_answer_text(question_locator, answer_locator)
+        assert result_text == expected_text
